@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* top = NULL;
+
+struct Node* createNode(int data) {
+    struct Node* ptr = (struct Node*)malloc(sizeof(struct Node));
+    ptr->data = data;
+    ptr->next = NULL;
+    return ptr;
+}
+
+void push(int data) {
+    struct Node* ptr = createNode(data);
+    if (top == NULL) {
+        top = ptr;
+        return;
+    }
+    ptr->next = top;
+    top = ptr;
+}
+
+int pop() {
+    if (top == NULL) return 0;  // Error case, assume valid input
+    int data = top->data;
+    struct Node* temp = top;
+    top = top->next;
+    free(temp);
+    return data;
+}
+
+int isEmpty() {
+    return top == NULL;
+}
+
+int main() {
+    char token[100];
+    while (scanf("%s", token) == 1) {
+        if (strlen(token) == 1 && !isdigit(token[0])) {
+            // Operator
+            int op2 = pop();
+            int op1 = pop();
+            int result;
+            char op = token[0];
+            if (op == '+') result = op1 + op2;
+            else if (op == '-') result = op1 - op2;
+            else if (op == '*') result = op1 * op2;
+            else if (op == '/') result = op1 / op2;
+            else continue;  // Invalid, assume valid input
+            push(result);
+        } else {
+            // Operand (single integer)
+            int num = atoi(token);
+            push(num);
+        }
+    }
+    
+    printf("%d\n", top->data);
+    
+    // Free remaining nodes
+    while (!isEmpty()) {
+        pop();
+    }
+    
+    return 0;
+}
