@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to check if tree is complete
+int isComplete(int arr[], int n, int index) {
+    // If index exceeds number of nodes → not complete
+    if (index >= n)
+        return 0;
+
+    // Recursively check left and right subtree
+    return isComplete(arr, n, 2 * index + 1) &&
+           isComplete(arr, n, 2 * index + 2);
+}
+
+// Function to check Min-Heap property
+int isMinHeap(int arr[], int n, int index) {
+    // If leaf node → valid
+    if (index >= (n / 2))
+        return 1;
+
+    // Check current node with children
+    if (arr[index] <= arr[2 * index + 1] &&
+        (2 * index + 2 >= n || arr[index] <= arr[2 * index + 2])) {
+
+        return isMinHeap(arr, n, 2 * index + 1) &&
+               isMinHeap(arr, n, 2 * index + 2);
+    }
+
+    return 0;
+}
+
+int main() {
+    int n;
+
+    // Input number of nodes
+    scanf("%d", &n);
+
+    int arr[n];
+
+    // Input level-order traversal
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // Check both conditions
+    if (isComplete(arr, n, 0) && isMinHeap(arr, n, 0)) {
+        printf("YES\n");
+    } else {
+        printf("NO\n");
+    }
+
+    return 0;
+}
