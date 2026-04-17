@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 1000
+
+int maxLenZeroSum(int arr[], int n) {
+    int prefixSum = 0;
+    int maxLen = 0;
+
+    // Hash map using array (simple approach)
+    // Initialize with -1 (not visited)
+    int hash[2 * MAX + 1];
+    for (int i = 0; i < 2 * MAX + 1; i++)
+        hash[i] = -2;  // -2 means not seen
+
+    // Offset to handle negative sums
+    int offset = MAX;
+
+    for (int i = 0; i < n; i++) {
+        prefixSum += arr[i];
+
+        // Case 1: sum = 0 from start
+        if (prefixSum == 0) {
+            maxLen = i + 1;
+        }
+
+        // Case 2: if seen before
+        if (hash[prefixSum + offset] != -2) {
+            int prevIndex = hash[prefixSum + offset];
+            int len = i - prevIndex;
+            if (len > maxLen)
+                maxLen = len;
+        } else {
+            // Store first occurrence
+            hash[prefixSum + offset] = i;
+        }
+    }
+
+    return maxLen;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    int result = maxLenZeroSum(arr, n);
+    printf("%d\n", result);
+
+    return 0;
+}
